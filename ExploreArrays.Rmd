@@ -1,0 +1,242 @@
+---
+title: "Introduction to microarray data exploration and analysis with _basic_ `R` functions"
+author: "Alex Sanchez"
+output:
+  html_document:
+    code_folding: show
+    toc: yes
+    toc_float: 
+      toc_collapsed: yes
+    toc_depth: 3
+    theme: cosmo
+    highlight: textmate
+    number_sections: yes
+editor: 
+  markdown: 
+    wrap: 72
+bibliography: References.bib
+self_contained: true
+---
+
+# Introduction
+
+This document is intended as a short introduction to managing microarray data using `R` for people who are new to either microarrays, `R` or both.
+
+Although most people working with microarrays and `R` use the open source collection of packages compiled in `Bioconductor` no specific libraries will be used in this introduction. This is not the way you will proceed later in the course we start this way to emphasize that, in fact, omics data are *just* another type of data.
+
+# A first look at microarray data. The study
+
+In this exercise we will explore a dataset that was produced to
+investigate the effect of inducing dopaminergic neurons in mice
+fibroblast. The study has been published by Cui et alt. (@Cui:2006) and uploaded to the Gene Expression Omnibus database with identifier
+[GDS4155](https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS4155) (Dataset) and [GSE27174](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE27174)
+
+This database allows uploading raw data but also pre-processed datasets in the form of "data matrix". The data matrix for this study is available at the link shown below and it can be downloaded directly from there.
+
+[GSE27174_series_matrix.txt](https://ftp.ncbi.nlm.nih.gov/geo/series/GSE27nnn/GSE27174/matrix/)
+
+The file is in linux compressed format ".gz" that need to be
+uncompressed before having access to the .txt file.
+
+In the following we assume that you have downloaded the file and
+unzipped it in a sub-folder of your working directory named "data" pending from your working directory.
+
+## Downloading the data and loading it into R
+
+The data matrix recovered from the web contains some general information
+first and the expression values for each sample after line 66.
+
+The first thing to do is to separate both informations. This can be done
+using the `read.table()` command using the `skip` option:
+
+-   In a first iteration we read the first 70 lines
+-   In the second on we skip the unnecessary 63 lines and read the expression matrix. Notic that the last line of the expression matrix contains a message "!series_matrix_table_end". This line has to be ommitted when reading the file! The easiest way to do it is to remove it from the file using a text editor but you can think of  smarter ways.
+
+```{r readData}
+info <-readLines("data/GSE27174_series_matrix.txt", n=70)
+x <-read.table("data/GSE27174_series_matrix.txt", skip=65, header=TRUE, sep="\t",row.names=1)
+```
+
+In order to understand the structure of the data we can proceed in two ways:
+
+-   Either inpect the header of the data matrix
+-   Or look for this information in the GEO web site.
+
+Opening the data matrix we realize that line 38 contains the following information:
+
+```{r}
+info[30]
+```
+
+An inspection of the information available either in the matrix or in the web shows that there are two type of samples "Induced" and "not induced". *We can re-label the columns of the data matrix* to work more fluently.
+
+```{r relabelX}
+colnames(x)
+colnames(x) <- paste(c(rep("DopaminInduc", 4), rep("NotInduced", 4)), c("01", "02", "03","04"), sep="")
+colnames(x)
+```
+
+## Obtain the annotations
+
+Each row in the array represents one *probeset* which, roughly,
+corresponds to one gene. In order to know to which gene each probeset is associated one needs to know what array type is using and to have the corresponding annotations table available.
+
+The array type for this problem is `hgu133A` whose information is
+available in GEO as plattform `GPL6246`:
+<https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL6246>which corresponds to the array type: MoGene-1_0-st, _Affymetrix Mouse Gene 1.0 ST Array transcript (gene) version_.
+
+An annotation table can be downloaded from this site and read into `R` to relate the probesets and their annotations. Again, this is a rudimentary way to proceed. In later exercises we will show a more efficient way to proceed using Bioconductor.
+
+The file can be downloaded from the we page pressing the button "Download full table ..." at the bottom of the page.
+
+After downloading, we have the file \`GPL6246-18741.txt\` and can "look at it" by reading the first lines to have a feeling of how these annotations look like.
+
+WARNING! This is a big file which may cause memory problems!
+
+```{r readAnots}
+infoAnots <-readLines("data/GPL6246-18741.txt", n=26) 
+annot <-read.delim2("data/GPL6246-18741.txt", comment.char="#")
+dim(annot)
+head(annot[1:5, c(1:4,10)])
+colnames(annot)
+rownames(annot)<-annot$ID
+```
+
+The expression matrix, the information about the groups (now in the column nnames) and the annotations is all we need to start exploring the dataset.
+
+# Data exploration
+
+Now, give a look at the object we have just created
+
+```{r summarize, print=FALSE,echo=TRUE}
+dim(x)      # Dimensions
+names(x)    # Vector of strings to name the columns
+round(apply(x,2, summary))  # Column-wise summary statistics,3)
+```
+
+It is usually to work in log2 in order to normalize and scale data.
+
+```{r logValues}
+logX <- log2(x)
+```
+
+We can make some plots, either histograms:
+
+```{r histArray0}
+opt <- par(mfrow=c(1,2))
+hist(x[,1])
+logM.1 <- logX[,1]
+hist(logM.1)
+par(opt)
+```
+
+Or, a better option, boxplots which allow viewing all the samples at once and provide hints about the convenience of doing some type of preprocessing.
+
+```{r boxplot1}
+groupColors <- c(rep("red", 4), rep("blue", 4))
+boxplot(x, col=groupColors, main="Expression values for\n 8 samples, two groups",
+    xlab="Slides",
+    ylab="Expression", las=2, cex.axis=0.7, cex.main=0.7)
+```
+```{r boxplot2}
+groupColors <- c(rep("red", 4), rep("blue", 4))
+boxplot(logX, col=groupColors, main="log Expression values for\n 8 samples, two groups",
+    xlab="Slides",
+    ylab="logExpression", las=2, cex.axis=0.7, cex.main=0.7)
+```
+
+Indeed, it seems better to work with original values (that seem to have been already normalized) than
+
+There does not seem to be any need of preprocessing.
+
+
+A very useful plot is ibtained by computing "sample-wise" principal components and plotting the first two components. It can be used to detect unusual samples or batch effects.
+
+First compute principal components and loadings.
+
+```{r pca}
+pcX<-prcomp(t(logX), scale=FALSE) # Ya se han escalado los datos
+loads<- round(pcX$sdev^2/sum(pcX$sdev^2)*100,1)
+```
+
+Then plot the first two components.
+
+```{r plotPCA}
+xlab<-c(paste("PC1",loads[1],"%"))
+ylab<-c(paste("PC2",loads[2],"%"))
+plot(pcX$x[,1:2],xlab=xlab,ylab=ylab, col=groupColors, 
+     main="Principal components (PCA)")
+```
+
+Alternatively a hierarchichal clustering can be used to visualize any
+expected (or discover an unexpected) grouping of the samples.
+
+```{r codedendrogramcomputeHC}
+clust.euclid.average <- hclust(dist(t(x)),method="average")
+plot(clust.euclid.average, hang=-1)
+```
+
+Both PCA and clustering show a clear grouping associated with treatment, which is rather common.
+
+# Looking for differentially expressed genes
+
+## Comparing the expression between groups
+
+In this section we assume that the data have already been normalized, so that we can proceed to compare them to see if there is differential expression between two conditions.
+
+There exist packages implementing different variations of tests of differential expression as well as corrections for the multiple testing problem. However, following the idea of this document we rely on simple t-tests that we will iterate along the matrix.
+
+First, we build 
+
+```{r ttestFunction, print=FALSE,echo=TRUE}
+ttest=function(x){tt=t.test(x[1:4],x[5:8])
+return(c(tt$statistic,
+         tt$p.value,
+         tt$estimate[1]-tt$estimate[2]))
+       }
+```
+
+and call it using `apply` again:
+
+```{r computettest}
+ans <- apply(x,1,ttest)
+ts <- ans[1,]
+pvals<-ans[2,]
+fc <-  ans[3,]
+```
+
+We can study the distribution ​of $t$ values obtained using a histogram or a "qq-plot". In any case we must not forget that we are looking at the distribution of the test statistics not to that of the data. "qq-plot" of t-statistics can be used to suggest that there are diferentially expressed genes, that is genes whose values are higher or lower than expected by the null hypothesis of non-difference.
+
+```{r histmeans,fig=T}
+hist(ts, breaks=100)
+```
+
+## Calling genes _differentially expressed_
+
+A gene is called "differentially expressed" if its expression is _significantly different_ between two conditions. Following standard approaches of statistical testing (which, have been strongly criticized) We can call a gene differentially expressed if its p-value is under a given threshold.
+
+Choosing the threshold is not trivial nor obvious, but to account for the problem of multiplicity of tests two common strategies are
+
+- Adjusting the p-values
+- Using a p-value much smaller than usual, combined with a minimum fold change to emphasize the need to combine "statistical significance" with "biological significance".
+
+```{r howManyGenes}
+for (i in c(0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001))
+  print(paste("genes with p-values smaller than", i, length(which(pvals < i))))
+```
+
+If we put the cutoff in 1e-06 35 we obtain 35 genes that are probably up or down regulated between the two conditions.
+
+
+### The volcano plot
+
+A common way to visualize the results of a differential expression analysis is to use a _volcano plot_ which plots the "fold change" vs "minus logarithm of the p-values".
+
+```{r}
+plot(fc, -log(pvals))
+```
+
+In this plot, the genes which are "outer" and "upper" are the candidates for being differentially expressed.
+
+
+# References
