@@ -14,7 +14,6 @@ output:
 editor: 
   markdown: 
     wrap: 72
-bibliography: References.bib
 self_contained: true
 ---
 
@@ -307,6 +306,24 @@ Both PCA and clustering show a clear grouping associated with treatment,
 which is rather common, except if there are unexpected issues such as
 problematic samples or batch effects.
 
+## Exercises
+
+This exercises are intended for people who is starting to work with
+Bioconductor.
+
+1.  Go to the website of the Gene Expression Omnibus and Look for a
+    comparative experiment that uses a small number of arrays and try to
+    understand how the information is organized.
+
+2.  Download the expressions and the covariate information (both stored
+    in the "Series Matrix File(s)"). Notice that **you need a ftp
+    program such as filezilla to download the file**
+
+3.  Reproduce the exploration using the dataset you have downloaded.
+    Feel free to complement it with any additional plot or summary which
+    you fiond interesting.
+
+
 # Looking for differentially expressed genes
 
 ## Comparing the expression between groups
@@ -388,3 +405,11 @@ In this plot, the genes which are "outer" and "upper" are the candidates
 for being differentially expressed.
 
 # References
+
+-   Clough, E., & Barrett, T. (2016). The Gene Expression Omnibus
+    Database. In Methods in molecular biology (Clifton, N.J.) (Vol.
+    1418, pp. 93--110). <https://doi.org/10.1007/978-1-4939-3578-9_5>
+
+- Cui, Dapeng, K. J. Dougherty, DW Machacek, S. Hochman, and D. J Baro. 2006. “Divergence Between Motoneurons: Gene Expression Profiling Provides a Molecular Characterization of Functionally Discrete Somatic and Autonomic Motoneurons.” Physiol Genomics 24 (3): 276–89. https://doi.org/ 10.1152/physiolgenomics.00109.2005.
+
+

@@ -1419,28 +1419,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-
-div.csl-bib-body { }
-div.csl-entry {
-clear: both;
-}
-.hanging div.csl-entry {
-margin-left:2em;
-text-indent:-2em;
-}
-div.csl-left-margin {
-min-width:2em;
-float:left;
-}
-div.csl-right-inline {
-margin-left:2em;
-padding-left:1em;
-}
-div.csl-indent {
-margin-left: 2em;
-}
-</style>
 
 
 
@@ -1703,8 +1681,8 @@ what is done in the example below.</p>
 microarray data. The study</h1>
 <p>In this exercise we will explore a dataset that was produced to
 investigate the effect of inducing dopaminergic neurons in mice
-fibroblast. The study has been published by Cui et alt. (<span class="citation">Cui et al. (2006)</span>) and uploaded to the Gene
-Expression Omnibus database with identifiers: - <a href="https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS4155">GDS4155</a>
+fibroblast. The study has been published by Cui et alt. (<span class="citation">@Cui:2006</span>) and uploaded to the Gene Expression
+Omnibus database with identifiers: - <a href="https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS4155">GDS4155</a>
 (Dataset) and - <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE27174">GSE27174</a></p>
 <p>This database allows uploading raw data but also pre-processed
 datasets in the form of “data matrix”. The data matrix for this study is
@@ -1893,6 +1871,22 @@ plot(clust.euclid.average, hang=-1)</code></pre>
 treatment, which is rather common, except if there are unexpected issues
 such as problematic samples or batch effects.</p>
 </div>
+<div id="exercises" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Exercises</h2>
+<p>This exercises are intended for people who is starting to work with
+Bioconductor.</p>
+<ol style="list-style-type: decimal">
+<li><p>Go to the website of the Gene Expression Omnibus and Look for a
+comparative experiment that uses a small number of arrays and try to
+understand how the information is organized.</p></li>
+<li><p>Download the expressions and the covariate information (both
+stored in the “Series Matrix File(s)”). Notice that <strong>you need a
+ftp program such as filezilla to download the file</strong></p></li>
+<li><p>Reproduce the exploration using the dataset you have downloaded.
+Feel free to complement it with any additional plot or summary which you
+fiond interesting.</p></li>
+</ol>
+</div>
 </div>
 <div id="looking-for-differentially-expressed-genes" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> Looking for
@@ -1966,18 +1960,18 @@ candidates for being differentially expressed.</p>
 </div>
 </div>
 </div>
-<div id="references" class="section level1 unnumbered">
-<h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Cui:2006" class="csl-entry">
-Cui, Dapeng, K. J. Dougherty, DW Machacek, S. Hochman, and D. J Baro.
-2006. <span>“Divergence Between Motoneurons: Gene Expression Profiling
+<div id="references" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> References</h1>
+<ul>
+<li><p>Clough, E., &amp; Barrett, T. (2016). The Gene Expression Omnibus
+Database. In Methods in molecular biology (Clifton, N.J.) (Vol. 1418,
+pp. 93–110). <a href="https://doi.org/10.1007/978-1-4939-3578-9_5" class="uri">https://doi.org/10.1007/978-1-4939-3578-9_5</a></p></li>
+<li><p>Cui, Dapeng, K. J. Dougherty, DW Machacek, S. Hochman, and D. J
+Baro. 2006. “Divergence Between Motoneurons: Gene Expression Profiling
 Provides a Molecular Characterization of Functionally Discrete Somatic
-and Autonomic Motoneurons.”</span> <em>Physiol Genomics</em> 24 (3):
-276–89. <a href="https://doi.org/ 10.1152/physiolgenomics.00109.2005">https://doi.org/
-10.1152/physiolgenomics.00109.2005</a>.
-</div>
-</div>
+and Autonomic Motoneurons.” Physiol Genomics 24 (3): 276–89. <a href="https://doi.org/" class="uri">https://doi.org/</a>
+10.1152/physiolgenomics.00109.2005.</p></li>
+</ul>
 </div>
 
 
