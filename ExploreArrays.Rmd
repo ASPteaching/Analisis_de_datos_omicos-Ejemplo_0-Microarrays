@@ -18,6 +18,14 @@ bibliography: References.bib
 self_contained: true
 ---
 
+
+```{r include=FALSE}
+require(knitr)
+opts_chunk$set(
+concordance=FALSE, echo=TRUE,  warning=FALSE, error=FALSE, message=FALSE)
+```
+
+
 # Introduction
 
 This document is intended as a short introduction to managing microarray data using `R` for people who are new to either microarrays, `R` or both.
@@ -104,29 +112,29 @@ rownames(annot)<-annot$ID
 
 The expression matrix, the information about the groups (now in the column nnames) and the annotations is all we need to start exploring the dataset.
 
-# Data exploration
+# Exploratory Data Analysis 
 
-Now, give a look at the object we have just created
+## Univariate statistical analysis
 
-```{r summarize, print=FALSE,echo=TRUE}
+Omics data are high throughput so it is complex to have a good overview just "inspecting the data".
+
+```{r dims, print=FALSE,echo=TRUE}
 dim(x)      # Dimensions
 names(x)    # Vector of strings to name the columns
+```
+
+A first glimpse of the dataset can be obtained using basic summary statistics and basic plots.
+
+```{r summarize, print=FALSE,echo=TRUE}
 round(apply(x,2, summary))  # Column-wise summary statistics,3)
 ```
 
-It is usually to work in log2 in order to normalize and scale data.
-
-```{r logValues}
-logX <- log2(x)
-```
-
-We can make some plots, either histograms:
+Histograms are useful but can only be applied on a sample at the time.
 
 ```{r histArray0}
-opt <- par(mfrow=c(1,2))
-hist(x[,1])
-logM.1 <- logX[,1]
-hist(logM.1)
+opt <- par(mfrow=c(3,3))
+for (i in 1:ncol(x))
+  hist(x[,i], main = names(x)[i])
 par(opt)
 ```
 
@@ -138,17 +146,22 @@ boxplot(x, col=groupColors, main="Expression values for\n 8 samples, two groups"
     xlab="Slides",
     ylab="Expression", las=2, cex.axis=0.7, cex.main=0.7)
 ```
+
+There is a slight assynmetry that might be corrected by taking logarithms 
+
 ```{r boxplot2}
+logX <- log2(x)
 groupColors <- c(rep("red", 4), rep("blue", 4))
 boxplot(logX, col=groupColors, main="log Expression values for\n 8 samples, two groups",
     xlab="Slides",
     ylab="logExpression", las=2, cex.axis=0.7, cex.main=0.7)
 ```
 
-Indeed, it seems better to work with original values (that seem to have been already normalized) than
+Taking logs only changes the assymetry so it is probably not needed so we decide not to go for it.
 
-There does not seem to be any need of preprocessing.
+Indeed the  values downloaded from GEO have usually been preprocessed so what we obtain is a reasonable result.
 
+## Multivariate data visualization
 
 A very useful plot is ibtained by computing "sample-wise" principal components and plotting the first two components. It can be used to detect unusual samples or batch effects.
 
@@ -164,19 +177,21 @@ Then plot the first two components.
 ```{r plotPCA}
 xlab<-c(paste("PC1",loads[1],"%"))
 ylab<-c(paste("PC2",loads[2],"%"))
+names2plot<-paste0(substr(names(x),1,3), 1:4)
 plot(pcX$x[,1:2],xlab=xlab,ylab=ylab, col=groupColors, 
-     main="Principal components (PCA)")
+     main ="Principal components (PCA)")
+# text(pcX$x[,1],pcX$x[,2],names2plot)
 ```
 
-Alternatively a hierarchichal clustering can be used to visualize any
-expected (or discover an unexpected) grouping of the samples.
+Alternatively a hierarchichal clustering can be used to visualize any expected (or discover an unexpected) grouping of the samples.
 
 ```{r codedendrogramcomputeHC}
+colnames(x) <- names2plot
 clust.euclid.average <- hclust(dist(t(x)),method="average")
 plot(clust.euclid.average, hang=-1)
 ```
 
-Both PCA and clustering show a clear grouping associated with treatment, which is rather common.
+Both PCA and clustering show a clear grouping associated with treatment, which is rather common, except if there are unexpected issues such as problematic samples or batch effects.
 
 # Looking for differentially expressed genes
 
