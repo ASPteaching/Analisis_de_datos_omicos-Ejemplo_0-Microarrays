@@ -35,20 +35,12 @@ libraries will be used in this introduction. This is not the way you
 will proceed later in the course we start this way to emphasize that, in
 fact, omics data are *just* another type of data.
 
-## About the Gene Expression Omnibus (EO) database
+## About the Gene Expression Omnibus (GEO) database
 
 The data for this example is obtained from the GEO database. Although
-its use is relatively straightforward, one thing that can be confusing
-is the distinct types of identifiers that characterize a given study. In
-order to make it clear from the beginning we start with a quick review
-of what is stored in the GEO database.
+its use is relatively straightforward, one thing that can be confusing is the distinct types of identifiers that characterize a given study. In order to make it clear from the beginning we start with a quick review of what is stored in the GEO database.
 
-The NCBI Gene Expression Omnibus (GEO) serves as a public repository for
-a wide range of high-throughput experimental data. These data include
-single and dual channel microarray-based experiments measuring mRNA,
-genomic DNA, and protein abundance, as well as non-array techniques such
-as serial analysis of gene expression (SAGE), mass spectrometry
-proteomic data, and high-throughput sequencing data.
+The NCBI Gene Expression Omnibus (GEO) serves as a public repository for a wide range of high-throughput experimental data. These data include single and dual channel microarray-based experiments measuring mRNA, genomic DNA, and protein abundance, as well as non-array techniques such as serial analysis of gene expression (SAGE), mass spectrometry proteomic data, and high-throughput sequencing data.
 
 At the most basic level of organization of GEO, there are four basic
 entity types. The first three (Sample, Platform, and Series) are
