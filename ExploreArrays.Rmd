@@ -25,20 +25,13 @@ concordance=FALSE, echo=TRUE,  warning=FALSE, error=FALSE, message=FALSE)
 
 # Introduction
 
-This document is intended as a short introduction to managing microarray
-data using `R` for people who are new to either microarrays, `R` or
-both.
+This document is intended as a short introduction to managing microarray data using `R` for people who are new to either microarrays, `R` or both.
 
-Although most people working with microarrays and `R` use the open
-source collection of packages compiled in `Bioconductor` no specific
-libraries will be used in this introduction. This is not the way you
-will proceed later in the course we start this way to emphasize that, in
-fact, omics data are *just* another type of data.
+Although most people working with microarrays and `R` use the open source collection of packages compiled in `Bioconductor` no specific libraries will be used in this introduction. This is not the way you will proceed later in the course we start this way to emphasize that, in fact, omics data are *just* another type of data.
 
 ## About the Gene Expression Omnibus (GEO) database
 
-The data for this example is obtained from the GEO database. Although
-its use is relatively straightforward, one thing that can be confusing is the distinct types of identifiers that characterize a given study. In order to make it clear from the beginning we start with a quick review of what is stored in the GEO database.
+The data for this example is obtained from the GEO database. Although its use is relatively straightforward, one thing that can be confusing is the distinct types of identifiers that characterize a given study. In order to make it clear from the beginning we start with a quick review of what is stored in the GEO database.
 
 The NCBI Gene Expression Omnibus (GEO) serves as a public repository for a wide range of high-throughput experimental data. These data include single and dual channel microarray-based experiments measuring mRNA, genomic DNA, and protein abundance, as well as non-array techniques such as serial analysis of gene expression (SAGE), mass spectrometry proteomic data, and high-throughput sequencing data.
 
@@ -255,11 +248,9 @@ boxplot(logX, col=groupColors, main="log Expression values for\n 8 samples, two 
     ylab="logExpression", las=2, cex.axis=0.7, cex.main=0.7)
 ```
 
-Taking logs only changes the assymetry so it is probably not needed so
-we decide not to go for it.
+Taking logs only changes the assymetry so it is probably not needed so we decide not to go for it.
 
-Indeed the values downloaded from GEO have usually been preprocessed so
-what we obtain is a reasonable result.
+Indeed the values downloaded from GEO have usually been preprocessed so what we obtain is a reasonable result.
 
 ## Multivariate data visualization
 
@@ -279,10 +270,11 @@ Then plot the first two components.
 ```{r plotPCA}
 xlab<-c(paste("PC1",loads[1],"%"))
 ylab<-c(paste("PC2",loads[2],"%"))
-names2plot<-paste0(substr(names(x),1,3), 1:4)
 plot(pcX$x[,1:2],xlab=xlab,ylab=ylab, col=groupColors, 
      main ="Principal components (PCA)")
-# text(pcX$x[,1],pcX$x[,2],names2plot)
+names2plot<-paste0(substr(names(x),1,3), 1:4)
+
+text(pcX$x[,1],pcX$x[,2],names2plot, pos=3, cex=.6)
 ```
 
 Alternatively a hierarchichal clustering can be used to visualize any
