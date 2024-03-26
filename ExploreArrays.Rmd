@@ -27,6 +27,8 @@ concordance=FALSE, echo=TRUE,  warning=FALSE, error=FALSE, message=FALSE)
 
 This document is intended as a short introduction to managing microarray data using `R` for people who are new to either microarrays, `R` or both.
 
+The document is written followin open source reproducibility principles. The code to re-crete it is available from github at: [https://github.com/ASPteaching/Analisis_de_datos_omicos-Ejemplo_0-Microarrays](https://github.com/ASPteaching/Analisis_de_datos_omicos-Ejemplo_0-Microarrays).
+
 Although most people working with microarrays and `R` use the open source collection of packages compiled in `Bioconductor` no specific libraries will be used in this introduction. This is not the way you will proceed later in the course we start this way to emphasize that, in fact, omics data are *just* another type of data.
 
 ## About the Gene Expression Omnibus (GEO) database
